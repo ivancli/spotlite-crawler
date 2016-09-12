@@ -6,12 +6,12 @@
  * Time: 12:16 PM
  */
 
-namespace Invigor\SLCrawler;
+namespace Invigor\Crawler;
 
 
 use Illuminate\Support\Facades\Facade;
 
-class SLCrawlerFacade extends Facade
+class CrawlerFacade extends Facade
 {
     protected static function getFacadeAccessor()
     {

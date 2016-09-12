@@ -1,8 +1,7 @@
 <?php
 namespace Invigor\Crawler\Repositories;
-
-use Invigor\SLCrawler\Contracts\CrawlerInterface;
-use Invigor\SLCrawler\Traits\Curler;
+use Invigor\Crawler\Contracts\CrawlerInterface;
+use Invigor\Crawler\Traits\Curler;
 
 /**
  * Created by PhpStorm.

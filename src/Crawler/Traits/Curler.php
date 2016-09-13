@@ -176,7 +176,7 @@ trait Curler
         }
 
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->curlHeaders);
-        curl_setopt($this->ch, CURLOPT_HEADER, 1);
+        curl_setopt($this->ch, CURLOPT_HEADER, 0);
         curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 0);

@@ -20,6 +20,9 @@ trait Curler
     private $cookieFile = null;
     private $sslCheck = 1;
     private $timeout = 120;
+    private $method=null;
+    private $fields = null;
+    private $dataType = null;
 
     /**
      *
@@ -157,6 +160,20 @@ trait Curler
         return $this->timeout;
     }
 
+    protected function setMethod($method){
+        $this->method = $method;
+    }
+
+    protected function setFields($fields)
+    {
+        $this->fields = $fields;
+    }
+
+    protected function setDataType($dataType)
+    {
+        $this->dataType = $dataType;
+    }
+
     /**
      * @return mixed
      */
@@ -168,6 +185,38 @@ trait Curler
         if (!empty($this->ips)) {
             $ipRandKey = array_rand($this->ips, 1);
             curl_setopt($this->ch, CURLOPT_INTERFACE, $this->ips[$ipRandKey]);
+        }
+
+        if (isset($this->method) && !is_null($this->method)) {
+            switch ($this->method) {
+                case "post":
+                    curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, "POST");
+                    break;
+                case "put":
+                    curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, "PUT");
+                    break;
+                case "delete":
+                    curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+                    break;
+                case "get":
+                default:
+            }
+        }
+
+
+        if (isset($this->fields) && !is_null($this->fields)) {
+            curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->fields);
+            if (isset($this->dataType) && $this->dataType == "json") {
+                $curlHeaders = array(
+                    'Accept-Language: en-us',
+                    'User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15',
+                    'Connection: Keep-Alive',
+                    'Cache-Control: no-cache',
+                );
+                $curlHeaders[] = 'Content-Type: application/json';
+                $curlHeaders[] = 'Content-Length: ' . strlen($this->fields);
+                curl_setopt($this->ch, CURLOPT_HTTPHEADER, $curlHeaders);
+            }
         }
 
         if (!is_null($this->cookieFile)) {
@@ -185,6 +234,8 @@ trait Curler
 
         $buffer = curl_exec($this->ch);
         $this->closeConnection();
+
+
         unset($ch);
         return $buffer;
     }

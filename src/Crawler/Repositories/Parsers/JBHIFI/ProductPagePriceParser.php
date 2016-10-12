@@ -16,6 +16,8 @@ class ProductPagePriceParser implements ParserInterface
     private $dom;
     private $xpathDom;
 
+    private $productIdxPath = "//input[contains(@class,'hiddenProductId')][1]";
+
     public function __construct()
     {
         libxml_use_internal_errors(true);
@@ -54,29 +56,28 @@ class ProductPagePriceParser implements ParserInterface
         $xPathParser = new XPathParser();
         $this->dom->loadHTML($this->getHTML());
         $this->xpathDom = new \DOMXPath($this->dom);
-        $result = $this->xpathDom->query($this->getOption('xpath'));
+        $result = $this->xpathDom->query($this->productIdxPath);
+        if(!is_null($result) && $result != false){
+            $Ids = $result->item(0)->getAttribute("value");
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, "https://products.jbhifi.com.au/product/GetPrices");
 
-        $Ids = $result->item(0)->getAttribute("value");
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(compact(['Ids'])));
+            $curlHeaders = array();
+            $curlHeaders[] = 'Content-Type: application/json';
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $curlHeaders);
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://products.jbhifi.com.au/product/GetPrices");
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(compact(['Ids'])));
-        $curlHeaders = array();
-        $curlHeaders[] = 'Content-Type: application/json';
-        curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $curlHeaders);
+            $buffer = curl_exec($ch);
+            curl_close($ch);
 
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        $buffer = curl_exec($ch);
-        curl_close($ch);
-
-        $buffer = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $buffer);
-        $result = json_decode($buffer);
-        if(isset($result->Result)){
-            return ($result->Result[0]->DisplayPrice);
-        }
+            $buffer = preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $buffer);
+            $result = json_decode($buffer);
+            if(isset($result->Result)){
+                return ($result->Result[0]->DisplayPrice);
+            }
 //        dump(json_decode('{"Result":[{"DisplayPrice":75.0,"PlacedPrice":75.0,"Prices":[{"Type":"Ticket","Value":75.0}],"ProductId":818383}],"Status":{"ActionType":0,"IsSuccess":true,"ActionString":""}}'));
 //        dump(json_last_error());
 //        $string = '{"Result":[{"DisplayPrice":75.0,"PlacedPrice":75.0,"Prices":[{"Type":"Ticket","Value":75.0}],"ProductId":818383}],"Status":{"ActionType":0,"IsSuccess":true,"ActionString":""}}';
@@ -87,6 +88,7 @@ class ProductPagePriceParser implements ParserInterface
 //                dump($i);
 //            }
 //        }
+        }
 
     }
 }

@@ -76,8 +76,6 @@ class ProductPageCrawler implements CrawlerInterface
 
         preg_match('/^Set-Cookie: (.*?);/m', $buffer, $m);
         $postData = $m[1];
-        dump($postData);
-        dump($this->getURL());
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $this->getURL());

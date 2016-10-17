@@ -11,7 +11,7 @@ trait Curler
     private $ch;
     private $curlHeaders = array(
         'Accept-Language: en-us',
-        'User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15',
+        'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36',
         'Connection: Keep-Alive',
         'Cache-Control: no-cache',
     );
@@ -209,7 +209,7 @@ trait Curler
             if (isset($this->dataType) && $this->dataType == "json") {
                 $curlHeaders = array(
                     'Accept-Language: en-us',
-                    'User-Agent: Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.2.15) Gecko/20110303 Firefox/3.6.15',
+                    'User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36',
                     'Connection: Keep-Alive',
                     'Cache-Control: no-cache',
                 );

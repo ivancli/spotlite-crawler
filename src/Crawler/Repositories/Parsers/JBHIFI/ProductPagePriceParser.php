@@ -58,7 +58,8 @@ class ProductPagePriceParser implements ParserInterface
         $this->xpathDom = new \DOMXPath($this->dom);
         $result = $this->xpathDom->query($this->productIdxPath);
         if(!is_null($result) && $result != false){
-            $Ids = $result->item(0)->getAttribute("value");
+            $Id = $result->item(0)->getAttribute("value");
+            $Ids = array($Id);
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, "https://products.jbhifi.com.au/product/GetPrices");
 
@@ -78,16 +79,6 @@ class ProductPagePriceParser implements ParserInterface
             if(isset($result->Result)){
                 return ($result->Result[0]->DisplayPrice);
             }
-//        dump(json_decode('{"Result":[{"DisplayPrice":75.0,"PlacedPrice":75.0,"Prices":[{"Type":"Ticket","Value":75.0}],"ProductId":818383}],"Status":{"ActionType":0,"IsSuccess":true,"ActionString":""}}'));
-//        dump(json_last_error());
-//        $string = '{"Result":[{"DisplayPrice":75.0,"PlacedPrice":75.0,"Prices":[{"Type":"Ticket","Value":75.0}],"ProductId":818383}],"Status":{"ActionType":0,"IsSuccess":true,"ActionString":""}}';
-//        for($i = 1; $i < strlen($string); $i++){
-//            if($string[$i] != $buffer[$i]){
-//                dump($string[$i]);
-//                dump($buffer[$i]);
-//                dump($i);
-//            }
-//        }
         }
 
     }
